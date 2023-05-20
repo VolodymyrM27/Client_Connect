@@ -6,10 +6,17 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
+
+jwt:
+  token:
+    secret: 4125442A472D4B6150645367566B59703373367639792442264528482B4D6251
+    expired: 259200000 # 3 * 24 * 60 * 60 * 1000
+
+        

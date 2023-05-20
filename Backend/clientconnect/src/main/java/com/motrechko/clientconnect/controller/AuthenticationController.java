@@ -1,6 +1,10 @@
-package com.motrechko.clientconnect.auth;
+package com.motrechko.clientconnect.controller;
 
 
+import com.motrechko.clientconnect.payload.AuthenticationRequest;
+import com.motrechko.clientconnect.payload.AuthenticationResponse;
+import com.motrechko.clientconnect.service.AuthenticationService;
+import com.motrechko.clientconnect.payload.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

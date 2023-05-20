@@ -1,4 +1,4 @@
-package com.motrechko.clientconnect.config;
+package com.motrechko.clientconnect.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

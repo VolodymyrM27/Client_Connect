@@ -1,4 +1,4 @@
-package com.motrechko.clientconnect.config;
+package com.motrechko.clientconnect.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

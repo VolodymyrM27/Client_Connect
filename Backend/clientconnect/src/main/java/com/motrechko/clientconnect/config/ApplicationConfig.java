@@ -1,7 +1,7 @@
 package com.motrechko.clientconnect.config;
 
 
-import com.motrechko.clientconnect.user.UserRepository;
+import com.motrechko.clientconnect.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +20,7 @@ public class ApplicationConfig {
 
     private final UserRepository userRepository;
     @Bean
-    public UserDetailsService userDetailsService(){
+    public UserDetailsService userDetailsService() throws UsernameNotFoundException{
        return username -> userRepository.findAllByEmail(username)
                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }

@@ -1,12 +1,16 @@
-package com.motrechko.clientconnect.auth;
+package com.motrechko.clientconnect.service;
 
-import com.motrechko.clientconnect.config.JwtService;
-import com.motrechko.clientconnect.user.Role;
-import com.motrechko.clientconnect.user.User;
-import com.motrechko.clientconnect.user.UserRepository;
+import com.motrechko.clientconnect.payload.AuthenticationRequest;
+import com.motrechko.clientconnect.payload.AuthenticationResponse;
+import com.motrechko.clientconnect.payload.RegisterRequest;
+import com.motrechko.clientconnect.security.JwtService;
+import com.motrechko.clientconnect.model.Role;
+import com.motrechko.clientconnect.model.User;
+import com.motrechko.clientconnect.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,14 +39,19 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        var user = userRepository.findAllByEmail(request.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("Username with login: " + request.getEmail()+ " not found"));
+
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
-        var user = userRepository.findAllByEmail(request.getEmail()).orElseThrow();
+
         var jwtToken = jwtService.generateToken(user);
+
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();

@@ -1,4 +1,4 @@
-package com.motrechko.clientconnect.user;
+package com.motrechko.clientconnect.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

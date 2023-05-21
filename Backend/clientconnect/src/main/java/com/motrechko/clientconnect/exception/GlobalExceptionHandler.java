@@ -1,26 +1,38 @@
 package com.motrechko.clientconnect.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.context.request.WebRequest;
+
+import java.time.LocalDateTime;
+
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<?> handleUsernameNotFoundException(UsernameNotFoundException ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(ex.getMessage());
+    public ResponseEntity<ApiError> handleUsernameNotFoundException(UsernameNotFoundException ex, HttpServletRequest request) {
+        ApiError errorDetails = new ApiError(
+                request.getRequestURI(),
+                ex.getMessage(),
+                HttpStatus.UNAUTHORIZED.value(),
+                LocalDateTime.now()
+        );
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<?> handleAccessDeniedException(AccessDeniedException ex) {
-        ErrorDetails errorDetails = new ErrorDetails(ex.getMessage());
+    public ResponseEntity<ApiError> handleAccessDeniedException(AccessDeniedException ex,HttpServletRequest request) {
+        ApiError errorDetails = new ApiError(
+                request.getRequestURI(),
+                ex.getMessage(),
+                HttpStatus.FORBIDDEN.value(),
+                LocalDateTime.now()
+        );
         return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
     }
 

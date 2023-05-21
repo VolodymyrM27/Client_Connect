@@ -1,19 +1,25 @@
 package com.motrechko.clientconnect.service;
 
-import com.motrechko.clientconnect.payload.AuthenticationRequest;
-import com.motrechko.clientconnect.payload.AuthenticationResponse;
-import com.motrechko.clientconnect.payload.RegisterRequest;
+import com.motrechko.clientconnect.exception.EmailExistException;
+import com.motrechko.clientconnect.model.Language;
+import com.motrechko.clientconnect.dto.AuthenticationRequestDTO;
+import com.motrechko.clientconnect.dto.AuthenticationResponseDTO;
+import com.motrechko.clientconnect.dto.RegisterRequestDTO;
 import com.motrechko.clientconnect.security.JwtService;
 import com.motrechko.clientconnect.model.Role;
 import com.motrechko.clientconnect.model.User;
 import com.motrechko.clientconnect.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -23,25 +29,34 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public AuthenticationResponseDTO register(RegisterRequestDTO request) {
+        if(userRepository.findByEmail(request.getEmail()).isPresent())
+            throw new EmailExistException(request.getEmail());
+
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .languageSettings(Language.EN)
+                .registrationDate(Instant.now())
+                .lastLoginDate(Instant.now())
                 .role(Role.USER)
                 .build();
         userRepository.save(user);
+
+        log.info("User {} successfully registered.", request.getEmail());
+
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
+        return AuthenticationResponseDTO.builder()
                 .token(jwtToken)
                 .build();
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        var user = userRepository.findAllByEmail(request.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("Username with login: " + request.getEmail()+ " not found"));
+    public AuthenticationResponseDTO authenticate(AuthenticationRequestDTO request) {
 
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("Username with login: " + request.getEmail() + " not found"));
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -50,9 +65,13 @@ public class AuthenticationService {
                 )
         );
 
+        user.setLastLoginDate(Instant.now());
+        userRepository.save(user);
+        log.info("User {} logged in successfully.", request.getEmail());
+
         var jwtToken = jwtService.generateToken(user);
 
-        return AuthenticationResponse.builder()
+        return AuthenticationResponseDTO.builder()
                 .token(jwtToken)
                 .build();
     }

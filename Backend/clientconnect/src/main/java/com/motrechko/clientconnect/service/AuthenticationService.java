@@ -34,16 +34,16 @@ public class AuthenticationService {
             throw new EmailExistException(request.getEmail());
 
         var user = User.builder()
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .languageSettings(Language.EN)
                 .registrationDate(Instant.now())
                 .lastLoginDate(Instant.now())
-                .role(Role.USER)
+                .isBusiness(request.isBusiness())
+                .role(request.isBusiness() ? Role.BUSINESS_USER : Role.NORMAL_USER)
                 .build();
         userRepository.save(user);
+
 
         log.info("User {} successfully registered.", request.getEmail());
 

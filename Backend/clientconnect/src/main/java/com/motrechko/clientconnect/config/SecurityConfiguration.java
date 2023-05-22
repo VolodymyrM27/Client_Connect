@@ -1,5 +1,6 @@
-package com.motrechko.clientconnect.security;
+package com.motrechko.clientconnect.config;
 
+import com.motrechko.clientconnect.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

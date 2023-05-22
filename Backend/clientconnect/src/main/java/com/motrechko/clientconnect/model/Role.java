@@ -1,6 +1,7 @@
 package com.motrechko.clientconnect.model;
 
 public enum Role {
-    USER,
-    ADMIN
+    NORMAL_USER,
+    BUSINESS_USER,
+    ADMINISTRATOR
 }

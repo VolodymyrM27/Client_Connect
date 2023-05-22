@@ -11,10 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequestDTO {
-    private String firstname;
-    private String lastname;
     private String email;
     private String password;
+    private boolean isBusiness;
 
 
 }

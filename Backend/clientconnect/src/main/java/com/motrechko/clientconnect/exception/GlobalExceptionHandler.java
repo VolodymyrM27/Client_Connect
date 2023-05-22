@@ -41,14 +41,27 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(EmailExistException.class)
-    public ResponseEntity<ApiError> handleEmailExistException(EmailExistException ex, HttpServletRequest request) {
-        return new ResponseEntity<>(new ApiError(
-                request.getRequestURI(),
-                ex.getMessage(),
-                HttpStatus.BAD_REQUEST.value(),
-                LocalDateTime.now()
-        ), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler({EmailExistException.class, UserProfileAlreadyExistsException.class})
+    public ResponseEntity<ApiError> handleExceptions(Exception ex, HttpServletRequest request) {
+        return new ResponseEntity<>(
+                new ApiError(
+                        request.getRequestURI(),
+                        ex.getMessage(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        LocalDateTime.now()
+                ), HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(UserProfileNotFoundException.class)
+    public ResponseEntity<ApiError> handleNotFoundExceptions(Exception ex, HttpServletRequest request) {
+        return new ResponseEntity<>(
+                new ApiError(
+                        request.getRequestURI(),
+                        ex.getMessage(),
+                        HttpStatus.NOT_FOUND.value(),
+                        LocalDateTime.now()
+                ), HttpStatus.NOT_FOUND);
     }
 
 
@@ -59,7 +72,8 @@ public class GlobalExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(", "));
 
-        return new ResponseEntity<>(new ApiError(
+        return new ResponseEntity<>(
+                new ApiError(
                 request.getRequestURI(),
                 errorMessage,
                 HttpStatus.BAD_REQUEST.value(),

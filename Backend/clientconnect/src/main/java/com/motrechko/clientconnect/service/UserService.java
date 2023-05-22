@@ -27,12 +27,6 @@ public class UserService {
         User updatedUser = userMapper.map(userDTO);
         updatedUser.setId(user.getId()); // Keep the same ID
 
-        if (userDTO.getFirstname() != null) {
-            user.setFirstname(updatedUser.getFirstname());
-        }
-        if (userDTO.getLastname() != null) {
-            user.setLastname(updatedUser.getLastname());
-        }
         if (userDTO.getEmail() != null) {
             if (userRepository.findByEmail(updatedUser.getEmail()).isPresent() &&
                     !userRepository.findByEmail(updatedUser.getEmail()).get().getId().equals(user.getId()))
@@ -50,6 +44,14 @@ public class UserService {
         user.setRegistrationDate(user.getRegistrationDate());
 
         return userMapper.map(userRepository.save(user));
+    }
+
+    public UserDTO getUserDTO(Long id){
+        return userMapper.map(userRepository.findById(id).orElseThrow( () -> new UserNotFoundException(id)));
+    }
+
+    public User getUser(Long id){
+        return userRepository.findById(id).orElseThrow( () -> new UserNotFoundException(id));
     }
 
 }

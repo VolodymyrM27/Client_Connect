@@ -22,14 +22,13 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue
     private Long id;
-    private String firstname;
-    private String lastname;
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
     private Language languageSettings;
     private Instant registrationDate;
     private Instant lastLoginDate;
+    private Boolean isBusiness;
 
     @Enumerated(EnumType.STRING)
     private Role role;

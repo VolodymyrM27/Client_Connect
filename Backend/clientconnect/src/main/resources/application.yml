@@ -6,13 +6,19 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
         format_sql: true
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
+  flyway:
+    url: ${spring.datasource.url}
+    locations: classpath:db/migration
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    enabled: true
 
 jwt:
   token:

@@ -2,7 +2,6 @@ package com.motrechko.clientconnect.config;
 
 
 import com.motrechko.clientconnect.repository.UserRepository;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

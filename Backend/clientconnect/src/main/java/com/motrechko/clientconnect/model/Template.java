@@ -3,6 +3,7 @@ package com.motrechko.clientconnect.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+
 import java.time.Instant;
 import java.util.LinkedHashSet;
 import java.util.Set;

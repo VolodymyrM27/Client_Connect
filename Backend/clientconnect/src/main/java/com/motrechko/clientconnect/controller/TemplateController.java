@@ -22,10 +22,10 @@ public class TemplateController {
     private final ServiceCategoryService serviceCategoryService;
     private final RequirementService requirementService;
 
-//    @PostMapping()
-//    public ResponseEntity<TemplateDTO> createTemplate(@RequestBody TemplateDTO templateDto){
-//        return ResponseEntity.ok(templateService.createTemplate(templateDto));
-//    }
+    @PostMapping()
+    public ResponseEntity<TemplateDTO> createTemplate(@RequestBody TemplateDTO templateDto){
+        return ResponseEntity.ok(templateService.createTemplate(templateDto));
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<TemplateDTO> getTemplate(@PathVariable Long id){

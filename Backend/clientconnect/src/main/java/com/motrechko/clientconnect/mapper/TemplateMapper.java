@@ -27,6 +27,9 @@ public interface TemplateMapper {
     @Mapping(target = "reviews", source = "reviewIds")
     Template toEntity(TemplateDTO templateDto);
 
+    Set<TemplateDTO> toDtoSet(Set<Template> templates);
+
+    Set<Template> toEntitySet(Set<TemplateDTO> templateDtos);
 
     default <T> Set<Long> mapToIdSet(Set<T> entities, Function<T, Long> idMapper) {
         return Optional.ofNullable(entities)

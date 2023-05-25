@@ -1,7 +1,9 @@
 package com.motrechko.clientconnect.controller;
 
+import com.motrechko.clientconnect.dto.TemplateDTO;
 import com.motrechko.clientconnect.dto.UserDTO;
 import com.motrechko.clientconnect.dto.UserProfileDTO;
+import com.motrechko.clientconnect.service.TemplateService;
 import com.motrechko.clientconnect.service.UserProfileService;
 import com.motrechko.clientconnect.service.UserService;
 import jakarta.validation.Valid;
@@ -11,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
@@ -19,6 +23,7 @@ public class UserController {
 
     private final UserService userService;
     private final UserProfileService userProfileService;
+    private final TemplateService templateService;
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody  UserDTO userDTO){
@@ -30,6 +35,12 @@ public class UserController {
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
         log.info("Getting user with id: {}", id);
         return ResponseEntity.ok(userService.getUserDTO(id));
+    }
+
+    @GetMapping("/{id}/templates")
+    public ResponseEntity<Set<TemplateDTO>> getUserTemplates(@PathVariable Long id) {
+        log.info("Getting user templates for user with id: {}", id);
+        return ResponseEntity.ok(templateService.getTemplatesByUser(id));
     }
 
     @PostMapping("/{id}/profile")

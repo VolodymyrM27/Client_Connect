@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.motrechko.clientconnect.model.Language;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -16,13 +17,6 @@ import java.time.Instant;
 public class UserDTO {
 
     private long id;
-    @NotBlank(message = "First name is mandatory")
-    @Size(max = 50, message = "First name cannot be longer than 50 characters")
-    private String firstname;
-
-    @NotBlank(message = "Last name is mandatory")
-    @Size(max = 50, message = "Last name cannot be longer than 50 characters")
-    private String lastname;
 
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Invalid email format")
@@ -33,6 +27,8 @@ public class UserDTO {
     @Size(min = 8, message = "Password should be at least 8 characters long")
     private String password;
 
+
+    @NotNull(message = "Language is mandatory")
     private Language languageSettings;
 
     private Instant registrationDate;

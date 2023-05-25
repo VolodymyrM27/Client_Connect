@@ -36,10 +36,8 @@ public class UserService {
         if (userDTO.getPassword() != null) {
             user.setPassword(bCryptPasswordEncoder.encode(updatedUser.getPassword()));
         }
-        if (userDTO.getLanguageSettings() != null) {
-            user.setLanguageSettings(updatedUser.getLanguageSettings());
-        }
 
+        user.setLanguageSettings(updatedUser.getLanguageSettings());
         user.setLastLoginDate(user.getLastLoginDate()); // these fields should not be updated
         user.setRegistrationDate(user.getRegistrationDate());
 

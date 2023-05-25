@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDate;
 
-import java.util.Date;
 
 @Data
 @Builder
@@ -23,8 +23,7 @@ public class UserProfile {
     private User user;
     private String firstName;
     private String lastName;
-    @Temporal(TemporalType.DATE)
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     private String gender;
     private String contactNumber;
     private String country;

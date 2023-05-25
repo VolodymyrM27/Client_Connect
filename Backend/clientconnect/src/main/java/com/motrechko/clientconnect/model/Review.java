@@ -13,7 +13,7 @@ import java.time.Instant;
 public class Review {
     @Id
     @Column(name = "review_id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "template_id")
@@ -22,7 +22,6 @@ public class Review {
     @Column(name = "rating")
     private Integer rating;
 
-    @Lob
     @Column(name = "review_text")
     private String reviewText;
 

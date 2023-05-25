@@ -65,4 +65,8 @@ public class TemplateService {
 
         return templateMapper.toDto(template);
     }
+
+    public Set<TemplateDTO> getTemplatesByUser(Long id){
+        return templateMapper.toDtoSet(templateRepository.findByUser_Id(id));
+    }
 }

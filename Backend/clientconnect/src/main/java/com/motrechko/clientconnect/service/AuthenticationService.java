@@ -9,6 +9,7 @@ import com.motrechko.clientconnect.security.JwtService;
 import com.motrechko.clientconnect.model.Role;
 import com.motrechko.clientconnect.model.User;
 import com.motrechko.clientconnect.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +30,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    @Transactional
     public AuthenticationResponseDTO register(RegisterRequestDTO request) {
         if(userRepository.findByEmail(request.getEmail()).isPresent())
             throw new EmailExistException(request.getEmail());

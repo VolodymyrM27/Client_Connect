@@ -46,9 +46,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler({EmailExistException.class, UserProfileAlreadyExistsException.class})
+    @ExceptionHandler({EmailExistException.class, UserProfileAlreadyExistsException.class, TemplateCreationException.class, TemplateRequirementEmptyException.class})
     public ResponseEntity<ApiError> handleExistExceptions(Exception ex, HttpServletRequest request) {
-        log.error("Already Exist Exception: {}", ex.getMessage());
+        log.error("Bad Request Exception: {}", ex.getMessage());
         return new ResponseEntity<>(
                 new ApiError(
                         request.getRequestURI(),

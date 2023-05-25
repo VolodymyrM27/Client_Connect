@@ -7,6 +7,7 @@ import org.mapstruct.*;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface RequirementMapper extends EntityMapper<RequirementDto, Requirement> {
 
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Requirement partialUpdate(RequirementDto requirementDto, @MappingTarget Requirement requirement);
 }

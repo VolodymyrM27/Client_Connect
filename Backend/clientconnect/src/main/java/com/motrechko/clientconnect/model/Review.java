@@ -1,15 +1,17 @@
 package com.motrechko.clientconnect.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 
+@Builder
 @Getter
 @Setter
 @Entity
 @Table(name = "reviews", schema = "client_connect")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Review {
     @Id
     @Column(name = "review_id", nullable = false)

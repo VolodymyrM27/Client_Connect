@@ -1,9 +1,12 @@
 package com.motrechko.clientconnect.exception;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
@@ -15,12 +18,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ApiError> handleUsernameNotFoundException(UsernameNotFoundException ex, HttpServletRequest request) {
+        log.error("Username not found exception: {}", ex.getMessage());
         ApiError errorDetails = new ApiError(
                 request.getRequestURI(),
                 ex.getMessage(),
@@ -32,6 +36,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiError> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
+        log.error("Access denied exception: {}", ex.getMessage());
         ApiError errorDetails = new ApiError(
                 request.getRequestURI(),
                 ex.getMessage(),
@@ -42,7 +47,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({EmailExistException.class, UserProfileAlreadyExistsException.class})
-    public ResponseEntity<ApiError> handleExceptions(Exception ex, HttpServletRequest request) {
+    public ResponseEntity<ApiError> handleExistExceptions(Exception ex, HttpServletRequest request) {
+        log.error("Already Exist Exception: {}", ex.getMessage());
         return new ResponseEntity<>(
                 new ApiError(
                         request.getRequestURI(),
@@ -53,8 +59,9 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(UserProfileNotFoundException.class)
+    @ExceptionHandler({UserProfileNotFoundException.class, CategoryNotFoundException.class, TemplateNotFound.class})
     public ResponseEntity<ApiError> handleNotFoundExceptions(Exception ex, HttpServletRequest request) {
+        log.error("Not found exception: {}", ex.getMessage());
         return new ResponseEntity<>(
                 new ApiError(
                         request.getRequestURI(),
@@ -71,14 +78,31 @@ public class GlobalExceptionHandler {
         String errorMessage = fieldErrors.stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(", "));
-
+        log.error("Validation exception: {}", errorMessage);
         return new ResponseEntity<>(
                 new ApiError(
+                        request.getRequestURI(),
+                        errorMessage,
+                        HttpStatus.BAD_REQUEST.value(),
+                        LocalDateTime.now()
+                ), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiError> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, HttpServletRequest request) {
+        log.error("Http message not readable exception: {}", ex.getMessage());
+
+        // Extract the most relevant error message
+        Throwable cause = ex.getCause();
+        String message = (cause instanceof InvalidFormatException) ? cause.getLocalizedMessage(): ex.getMessage();
+
+        ApiError errorDetails = new ApiError(
                 request.getRequestURI(),
-                errorMessage,
+                message,
                 HttpStatus.BAD_REQUEST.value(),
                 LocalDateTime.now()
-        ), HttpStatus.BAD_REQUEST);
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
 

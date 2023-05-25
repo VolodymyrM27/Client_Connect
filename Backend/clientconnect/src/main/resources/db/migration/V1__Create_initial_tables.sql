@@ -12,7 +12,7 @@ CREATE TABLE users
 
 CREATE TABLE user_profile
 (
-    id             INT PRIMARY KEY,
+    id             INT AUTO_INCREMENT PRIMARY KEY,
     user_id        INT,
     first_name     VARCHAR(255),
     last_name      VARCHAR(255),

@@ -14,6 +14,4 @@ public class RegisterRequestDTO {
     private String email;
     private String password;
     private boolean isBusiness;
-
-
 }

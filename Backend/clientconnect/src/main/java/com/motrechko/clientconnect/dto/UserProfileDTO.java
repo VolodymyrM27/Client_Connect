@@ -10,11 +10,10 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
+
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UserProfileDTO {
-
-
 
     @NotBlank(message = "First name cannot be blank")
     @Size(max = 50, message = "First name must be less than 50 characters")

@@ -46,4 +46,8 @@ public class Template {
     @OneToMany(mappedBy = "template")
     private Set<UserTemplateHistory> userTemplateHistories = new LinkedHashSet<>();
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
 }

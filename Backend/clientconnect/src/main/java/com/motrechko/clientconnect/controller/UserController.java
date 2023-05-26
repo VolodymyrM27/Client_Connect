@@ -26,7 +26,7 @@ public class UserController {
     private final TemplateService templateService;
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody  UserDTO userDTO){
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
         log.info("Updating user with id: {}", id);
         return ResponseEntity.ok(userService.updateUser(id, userDTO));
     }
@@ -43,6 +43,20 @@ public class UserController {
         return ResponseEntity.ok(templateService.getTemplatesByUser(id));
     }
 
+    @DeleteMapping("/{id}/templates/{templateId}")
+    public ResponseEntity<Void> deleteUserTemplate(@PathVariable Long id, @PathVariable Long templateId) {
+        log.info("Deleting template with id: {} for user with id: {}", templateId, id);
+        templateService.deleteTemplateByUser(id, templateId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/templates?status=deleted")
+    public ResponseEntity<Set<TemplateDTO>> getDeletedTemplates(@PathVariable Long id) {
+        log.info("Getting deleted templates for user with id: {}", id);
+        return ResponseEntity.ok(templateService.getDeletedTemplatesByUser(id));
+    }
+
+
     @PostMapping("/{id}/profile")
     public ResponseEntity<UserProfileDTO> createUserProfileInfo(@PathVariable Long id, @RequestBody @Valid UserProfileDTO profile) {
         log.info("Creating info - profile for user with id: {}", id);
@@ -56,7 +70,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}/profile")
-    public ResponseEntity<UserProfileDTO> updateUserProfileInfo(@PathVariable Long id, @RequestBody UserProfileDTO userProfileDTO){
+    public ResponseEntity<UserProfileDTO> updateUserProfileInfo(@PathVariable Long id, @RequestBody UserProfileDTO userProfileDTO) {
         log.info("Updating info - profile for user with id: {}", id);
         return ResponseEntity.ok(userProfileService.updateUserProfile(id, userProfileDTO));
     }

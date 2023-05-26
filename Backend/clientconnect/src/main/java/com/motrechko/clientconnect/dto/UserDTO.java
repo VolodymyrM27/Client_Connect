@@ -16,7 +16,7 @@ import java.time.Instant;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UserDTO {
 
-    private long id;
+    private Long id;
 
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Invalid email format")

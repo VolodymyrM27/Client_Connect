@@ -2,6 +2,7 @@ package com.motrechko.clientconnect.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.motrechko.clientconnect.model.Status;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -15,6 +16,7 @@ import java.util.Set;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TemplateDTO {
+    private Long id;
     @NotNull(message = "User Cannot be empty")
     private Long userId;
     @NotNull(message = "category cannot be empty")
@@ -26,4 +28,6 @@ public class TemplateDTO {
     @NotNull(message = "Requirements cannot be empty")
     private Set<TemplateRequirementDto> templateRequirements;
     private Set<Long> userTemplateHistoryIds;
+    private Status status;
+
 }

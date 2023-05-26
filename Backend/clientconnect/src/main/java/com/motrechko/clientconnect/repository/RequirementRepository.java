@@ -8,6 +8,7 @@ import java.util.List;
 
 
 public interface RequirementRepository extends JpaRepository<Requirement, Long> {
+    Requirement findByRequirementName(String requirementName);
     List<Requirement> findByCategory_Id(Long id);
     List<Requirement> findByCategory(ServiceCategory category);
 }

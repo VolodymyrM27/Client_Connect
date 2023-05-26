@@ -2,9 +2,11 @@ package com.motrechko.clientconnect.service;
 
 import com.motrechko.clientconnect.dto.TemplateDTO;
 import com.motrechko.clientconnect.exception.TemplateCreationException;
+import com.motrechko.clientconnect.exception.TemplateDoesNotBelongException;
 import com.motrechko.clientconnect.exception.TemplateNotFound;
 import com.motrechko.clientconnect.exception.TemplateRequirementEmptyException;
 import com.motrechko.clientconnect.mapper.TemplateMapper;
+import com.motrechko.clientconnect.model.Status;
 import com.motrechko.clientconnect.model.Template;
 import com.motrechko.clientconnect.model.TemplateRequirement;
 import com.motrechko.clientconnect.repository.TemplateRepository;
@@ -43,6 +45,7 @@ public class TemplateService {
     private Template createAndSaveTemplate(TemplateDTO templateDTO){
         log.info("Creating and saving template");
         Template template = templateMapper.toEntity(templateDTO);
+        template.setStatus(Status.ACTIVE);
         template.setCreatedAt(Instant.now());
         template.setUpdatedAt(Instant.now());
         return templateRepository.save(template);
@@ -60,13 +63,29 @@ public class TemplateService {
 
 
     public TemplateDTO getTemplateById(Long idTemplate) {
-        Template template = templateRepository.findById(idTemplate)
+        Template template = templateRepository.findByIdAndStatusNot(idTemplate, Status.DELETED)
                 .orElseThrow(() -> new TemplateNotFound(idTemplate));
-
         return templateMapper.toDto(template);
     }
-
     public Set<TemplateDTO> getTemplatesByUser(Long id){
-        return templateMapper.toDtoSet(templateRepository.findByUser_Id(id));
+        return templateMapper.toDtoSet(templateRepository.findByUser_IdAndStatusNot(id,Status.DELETED));
+    }
+
+    @Transactional
+    public void deleteTemplateByUser(Long userId, Long templateId) {
+        Template template = templateRepository.findById(templateId)
+                .orElseThrow(() -> new TemplateNotFound(templateId));
+
+        if (!template.getUser().getId().equals(userId)) {
+            throw new TemplateDoesNotBelongException(userId, templateId);
+        }
+
+        template.setStatus(Status.DELETED);
+        templateRepository.save(template);
+        log.info("Successfully changed the status to {} for the template with id: {} for user with id: {}",Status.DELETED ,templateId, userId);
+    }
+
+    public Set<TemplateDTO> getDeletedTemplatesByUser(Long usedId) {
+        return templateMapper.toDtoSet(templateRepository.findByUser_IdAndStatus(usedId, Status.DELETED));
     }
 }

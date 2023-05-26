@@ -46,7 +46,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler({EmailExistException.class, UserProfileAlreadyExistsException.class, TemplateCreationException.class, TemplateRequirementEmptyException.class})
+    @ExceptionHandler({EmailExistException.class, UserProfileAlreadyExistsException.class, TemplateCreationException.class,
+            TemplateRequirementEmptyException.class, TemplateDoesNotBelongException.class})
     public ResponseEntity<ApiError> handleExistExceptions(Exception ex, HttpServletRequest request) {
         log.error("Bad Request Exception: {}", ex.getMessage());
         return new ResponseEntity<>(
@@ -94,7 +95,7 @@ public class GlobalExceptionHandler {
 
         // Extract the most relevant error message
         Throwable cause = ex.getCause();
-        String message = (cause instanceof InvalidFormatException) ? cause.getLocalizedMessage(): ex.getMessage();
+        String message = (cause instanceof InvalidFormatException) ? cause.getLocalizedMessage() : ex.getMessage();
 
         ApiError errorDetails = new ApiError(
                 request.getRequestURI(),

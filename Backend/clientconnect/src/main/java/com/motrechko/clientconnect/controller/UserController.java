@@ -50,7 +50,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}/templates?status=deleted")
+    @GetMapping("/{id}/templates/trash")
     public ResponseEntity<Set<TemplateDTO>> getDeletedTemplates(@PathVariable Long id) {
         log.info("Getting deleted templates for user with id: {}", id);
         return ResponseEntity.ok(templateService.getDeletedTemplatesByUser(id));

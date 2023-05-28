@@ -15,7 +15,7 @@ import lombok.Data;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 
 public class RequirementDto  {
-    private Integer id;
+    private Long id;
     @Size(max = 255)
     private String requirementName;
     @JsonIgnore

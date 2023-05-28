@@ -1,13 +1,13 @@
 package com.motrechko.clientconnect.controller;
 
 import com.motrechko.clientconnect.dto.BusinessDto;
+import com.motrechko.clientconnect.dto.RequirementDto;
 import com.motrechko.clientconnect.service.BusinessService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,5 +18,10 @@ public class BusinessController {
     @PostMapping
     public ResponseEntity<BusinessDto> createBusiness(@RequestBody BusinessDto businessDto){
         return ResponseEntity.ok(businessService.create(businessDto));
+    }
+
+    @PostMapping("/{businessId}/requirements")
+    public ResponseEntity<Set<RequirementDto>> addRequirements(@PathVariable Long businessId, @RequestBody Set<RequirementDto> requirementDtos){
+        return ResponseEntity.ok(businessService.addRequirements( businessId, requirementDtos));
     }
 }

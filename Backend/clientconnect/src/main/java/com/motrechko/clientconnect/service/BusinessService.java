@@ -102,9 +102,9 @@ public class BusinessService {
                 .orElseThrow(() -> new RequirementNotFoundException(requirementDto.getId()));
 
         if (!existingRequirement.getCategory().equals(businessCategory)) {
-            log.error("Unsupported requirement category {} for business category {}",
-                    requirementDto.getCategory(), businessCategory);
-            throw new UnsupportedRequirementException(businessCategory, requirementDto.getCategory());
+            log.error("Unsupported requirement {} for business category {}",
+                    requirementDto.getRequirementName(), businessCategory.getCategoryName());
+            throw new UnsupportedRequirementException(businessCategory.getCategoryName(), requirementDto.getRequirementName());
         }
     }
 
@@ -127,4 +127,12 @@ public class BusinessService {
         }
     }
 
+    public Set<RequirementDto> getSupportedRequirements(Long businessId) {
+        findBusiness(businessId);
+        return businessSupportedRequirementRepository.findByBusiness_Id(businessId)
+                .stream()
+                .map(BusinessSupportedRequirement::getRequirement)
+                .map(requirementMapper::toDto)
+                .collect(Collectors.toSet());
+    }
 }

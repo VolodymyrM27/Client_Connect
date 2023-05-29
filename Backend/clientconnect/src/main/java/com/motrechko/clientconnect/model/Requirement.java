@@ -2,8 +2,11 @@ package com.motrechko.clientconnect.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+@Data
 
 @Getter
 @Setter

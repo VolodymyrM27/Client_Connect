@@ -24,4 +24,9 @@ public class BusinessController {
     public ResponseEntity<Set<RequirementDto>> addRequirements(@PathVariable Long businessId, @RequestBody Set<RequirementDto> requirementDtos){
         return ResponseEntity.ok(businessService.addRequirements( businessId, requirementDtos));
     }
+
+    @GetMapping("/{businessId}/requirements")
+    public ResponseEntity<Set<RequirementDto>> getSupportedRequirements(@PathVariable Long businessId){
+        return ResponseEntity.ok(businessService.getSupportedRequirements(businessId));
+    }
 }

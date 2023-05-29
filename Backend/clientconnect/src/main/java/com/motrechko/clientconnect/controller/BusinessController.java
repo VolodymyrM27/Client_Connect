@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -15,6 +16,18 @@ import java.util.Set;
 public class BusinessController {
 
     private final BusinessService businessService;
+
+    @GetMapping
+    public ResponseEntity<List<BusinessDto>> getAllBusiness(){
+        return ResponseEntity.ok(businessService.getAllBusiness());
+    }
+
+    @GetMapping("/category/{idCategory}")
+    public ResponseEntity<List<BusinessDto>> getAllBusinessByCategory(@PathVariable Long idCategory){
+        return ResponseEntity.ok(businessService.getAllBusinessByCategory(idCategory));
+    }
+
+
     @PostMapping
     public ResponseEntity<BusinessDto> createBusiness(@RequestBody BusinessDto businessDto){
         return ResponseEntity.ok(businessService.create(businessDto));

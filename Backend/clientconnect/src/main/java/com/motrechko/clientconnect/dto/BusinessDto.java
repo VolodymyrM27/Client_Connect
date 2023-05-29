@@ -2,13 +2,15 @@ package com.motrechko.clientconnect.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
+
 import com.motrechko.clientconnect.model.ServiceCategory;
-import com.motrechko.clientconnect.model.User;
+
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.Value;
 
-import java.io.Serializable;
+
+
 import java.time.Instant;
 
 /**

@@ -135,4 +135,12 @@ public class BusinessService {
                 .map(requirementMapper::toDto)
                 .collect(Collectors.toSet());
     }
+
+    public List<BusinessDto> getAllBusiness() {
+        return businessMapper.toDto(businessRepository.findAll());
+    }
+
+    public List<BusinessDto> getAllBusinessByCategory(Long idCategory) {
+        return businessMapper.toDto(businessRepository.findByCategory_Id(idCategory));
+    }
 }

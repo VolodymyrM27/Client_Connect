@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
+    @ExceptionHandler({AccessDeniedException.class, AccountRoleException.class})
     public ResponseEntity<ApiError> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
         log.error("Access denied exception: {}", ex.getMessage());
         ApiError errorDetails = new ApiError(
@@ -47,8 +47,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({EmailExistException.class, UserProfileAlreadyExistsException.class, TemplateCreationException.class,
-            TemplateRequirementEmptyException.class, TemplateDoesNotBelongException.class})
-    public ResponseEntity<ApiError> handleExistExceptions(Exception ex, HttpServletRequest request) {
+            TemplateRequirementEmptyException.class, TemplateDoesNotBelongException.class, UnsupportedRequirementException.class})
+    public ResponseEntity<ApiError> handleBadRequestExceptions(Exception ex, HttpServletRequest request) {
         log.error("Bad Request Exception: {}", ex.getMessage());
         return new ResponseEntity<>(
                 new ApiError(
@@ -60,7 +60,8 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler({UserProfileNotFoundException.class, CategoryNotFoundException.class, TemplateNotFound.class})
+    @ExceptionHandler({UserProfileNotFoundException.class, CategoryNotFoundException.class,
+            TemplateNotFound.class, BusinessNotFoundException.class, RequirementNotFoundException.class})
     public ResponseEntity<ApiError> handleNotFoundExceptions(Exception ex, HttpServletRequest request) {
         log.error("Not found exception: {}", ex.getMessage());
         return new ResponseEntity<>(
@@ -105,6 +106,19 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> handleAllExceptions(Exception ex, HttpServletRequest request) {
+        log.error("Unexpected exception: {}", ex.getMessage());
+        ApiError errorDetails = new ApiError(
+                request.getRequestURI(),
+                ex.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
 
 }

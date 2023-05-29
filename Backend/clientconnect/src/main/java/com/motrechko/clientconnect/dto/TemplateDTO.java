@@ -16,6 +16,7 @@ import java.util.Set;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TemplateDTO {
+
     private Long id;
     @NotNull(message = "User Cannot be empty")
     private Long userId;
@@ -23,11 +24,13 @@ public class TemplateDTO {
     private Long categoryId;
     private Instant createdAt;
     private Instant updatedAt;
+    @NotNull(message = "public status cannot be empty")
     private Boolean isPublic;
     private Set<Long> reviewIds;
     @NotNull(message = "Requirements cannot be empty")
     private Set<TemplateRequirementDto> templateRequirements;
     private Set<Long> userTemplateHistoryIds;
+    @NotNull(message = "status of template cannot be empty")
     private Status status;
 
 }

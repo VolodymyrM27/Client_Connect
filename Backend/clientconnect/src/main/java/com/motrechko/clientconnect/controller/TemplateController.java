@@ -2,7 +2,6 @@ package com.motrechko.clientconnect.controller;
 
 import com.motrechko.clientconnect.dto.RequirementDto;
 import com.motrechko.clientconnect.dto.TemplateDTO;
-import com.motrechko.clientconnect.model.Requirement;
 import com.motrechko.clientconnect.model.ServiceCategory;
 import com.motrechko.clientconnect.service.RequirementService;
 import com.motrechko.clientconnect.service.ServiceCategoryService;
@@ -26,6 +25,12 @@ public class TemplateController {
     public ResponseEntity<TemplateDTO> createTemplate(@RequestBody TemplateDTO templateDto){
         return ResponseEntity.ok(templateService.createTemplate(templateDto));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TemplateDTO> updateTemplate(@RequestBody TemplateDTO templateDTO, @PathVariable Long id){
+        return ResponseEntity.ok(templateService.updateTemplate(templateDTO,id));
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<TemplateDTO> getTemplate(@PathVariable Long id){

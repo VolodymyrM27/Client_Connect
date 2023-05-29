@@ -25,4 +25,7 @@ jwt:
     secret: 4125442A472D4B6150645367566B59703373367639792442264528482B4D6251
     expired: 259200000 # 3 * 24 * 60 * 60 * 1000
 
-        
+logging:
+  level:
+    root: INFO
+    com.motrechko.clientconnect: DEBUG

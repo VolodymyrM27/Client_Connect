@@ -2,7 +2,9 @@ package com.motrechko.clientconnect.controller;
 
 import com.motrechko.clientconnect.dto.BusinessDto;
 import com.motrechko.clientconnect.dto.RequirementDto;
+import com.motrechko.clientconnect.dto.TerminalDto;
 import com.motrechko.clientconnect.service.BusinessService;
+import com.motrechko.clientconnect.service.TerminalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import java.util.Set;
 public class BusinessController {
 
     private final BusinessService businessService;
+    private final TerminalService terminalService;
 
     @GetMapping
     public ResponseEntity<List<BusinessDto>> getAllBusiness(){
@@ -41,5 +44,10 @@ public class BusinessController {
     @GetMapping("/{businessId}/requirements")
     public ResponseEntity<Set<RequirementDto>> getSupportedRequirements(@PathVariable Long businessId){
         return ResponseEntity.ok(businessService.getSupportedRequirements(businessId));
+    }
+
+    @PostMapping("/terminals")
+    public ResponseEntity<TerminalDto> addNewTerminals(@RequestBody TerminalDto terminalDto){
+        return ResponseEntity.ok(terminalService.create(terminalDto));
     }
 }

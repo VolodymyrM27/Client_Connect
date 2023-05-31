@@ -29,3 +29,9 @@ logging:
   level:
     root: INFO
     com.motrechko.clientconnect: DEBUG
+mqtt:
+  broker:
+    url: #.s2.eu.hivemq.cloud
+  port: #
+  username: #
+  password: #

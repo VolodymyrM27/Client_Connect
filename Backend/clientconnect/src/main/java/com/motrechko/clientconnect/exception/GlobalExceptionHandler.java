@@ -47,7 +47,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({EmailExistException.class, UserProfileAlreadyExistsException.class, TemplateCreationException.class,
-            TemplateRequirementEmptyException.class, TemplateDoesNotBelongException.class, UnsupportedRequirementException.class})
+            TemplateRequirementEmptyException.class, TemplateDoesNotBelongException.class,
+            UnsupportedRequirementException.class, NfcScanMessageException.class})
     public ResponseEntity<ApiError> handleBadRequestExceptions(Exception ex, HttpServletRequest request) {
         log.error("Bad Request Exception: {}", ex.getMessage());
         return new ResponseEntity<>(
@@ -61,7 +62,8 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler({UserProfileNotFoundException.class, CategoryNotFoundException.class,
-            TemplateNotFound.class, BusinessNotFoundException.class, RequirementNotFoundException.class})
+            TemplateNotFound.class, BusinessNotFoundException.class,
+            RequirementNotFoundException.class, CardNotFoundException.class})
     public ResponseEntity<ApiError> handleNotFoundExceptions(Exception ex, HttpServletRequest request) {
         log.error("Not found exception: {}", ex.getMessage());
         return new ResponseEntity<>(

@@ -1,9 +1,11 @@
 package com.motrechko.clientconnect.service;
 
+import com.motrechko.clientconnect.dto.NfcScanMessageDTO;
 import com.motrechko.clientconnect.dto.UserDTO;
 import com.motrechko.clientconnect.exception.EmailExistException;
 import com.motrechko.clientconnect.exception.UserNotFoundException;
 import com.motrechko.clientconnect.mapper.UserMapper;
+import com.motrechko.clientconnect.model.Card;
 import com.motrechko.clientconnect.model.User;
 import com.motrechko.clientconnect.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
@@ -19,6 +21,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final CardService cardService;
 
     @Transactional
     public UserDTO updateUser(Long id, UserDTO userDTO) {
@@ -51,5 +54,11 @@ public class UserService {
     public User getUser(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
+
+    public User getUserByCardDetails(NfcScanMessageDTO nfcScanMessageDTO){
+        Card card = cardService.getCardDetail(nfcScanMessageDTO.getCardId());
+        return getUser(card.getUser().getId());
+    }
+
 
 }

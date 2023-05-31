@@ -1,6 +1,7 @@
 package com.motrechko.clientconnect.service;
 
 import com.motrechko.clientconnect.dto.BusinessDto;
+import com.motrechko.clientconnect.dto.NfcScanMessageDTO;
 import com.motrechko.clientconnect.dto.RequirementDto;
 import com.motrechko.clientconnect.exception.AccountRoleException;
 import com.motrechko.clientconnect.exception.BusinessNotFoundException;
@@ -33,6 +34,7 @@ public class BusinessService {
     private final RequirementMapper requirementMapper;
     private final BusinessSupportedRequirementRepository businessSupportedRequirementRepository;
     private final RequirementRepository requirementRepository;
+    private final TerminalService terminalService;
 
     @Transactional
     public BusinessDto create(BusinessDto businessDto) {
@@ -142,5 +144,10 @@ public class BusinessService {
 
     public List<BusinessDto> getAllBusinessByCategory(Long idCategory) {
         return businessMapper.toDto(businessRepository.findByCategory_Id(idCategory));
+    }
+
+    public Business getBusinessByTerminalId(NfcScanMessageDTO nfcScanMessageDTO){
+        Terminal terminal = terminalService.getTerminalByTerminalUUID(nfcScanMessageDTO.getTerminalUUID());
+        return findBusiness(terminal.getBusiness().getId());
     }
 }

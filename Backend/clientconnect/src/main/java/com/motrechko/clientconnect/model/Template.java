@@ -8,6 +8,24 @@ import java.time.Instant;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@NamedEntityGraph(
+        name = "template-with-all-fields",
+        attributeNodes = {
+                @NamedAttributeNode("user"),
+                @NamedAttributeNode("category"),
+                @NamedAttributeNode("reviews"),
+                @NamedAttributeNode(value = "templateRequirements", subgraph = "requirement-field"),
+                @NamedAttributeNode("userTemplateHistories")
+        }, subgraphs = {
+        @NamedSubgraph(
+                name = "requirement-field",
+                attributeNodes = {
+                        @NamedAttributeNode("template"),
+                        @NamedAttributeNode("requirement")
+                }
+        )
+}
+)
 @Data
 @Builder
 @NoArgsConstructor

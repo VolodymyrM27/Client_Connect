@@ -8,9 +8,7 @@ import com.motrechko.clientconnect.exception.TemplateNotFound;
 import com.motrechko.clientconnect.exception.TemplateRequirementEmptyException;
 import com.motrechko.clientconnect.mapper.TemplateMapper;
 import com.motrechko.clientconnect.mapper.TemplateRequirementMapper;
-import com.motrechko.clientconnect.model.Status;
-import com.motrechko.clientconnect.model.Template;
-import com.motrechko.clientconnect.model.TemplateRequirement;
+import com.motrechko.clientconnect.model.*;
 import com.motrechko.clientconnect.repository.RequirementRepository;
 import com.motrechko.clientconnect.repository.TemplateRepository;
 import com.motrechko.clientconnect.repository.TemplateRequirementRepository;
@@ -147,5 +145,16 @@ public class TemplateService {
                 templateRequirementRepository.findByTemplate_IdAndTemplate_User(existingTemplate.getId(), existingTemplate.getUser())
         );
     }
+
+    public TemplateDTO getUsersActiveTemplateByCategory(User user, ServiceCategory category) {
+        Template template = findUsersActiveTemplateByCategory(user, category);
+        return templateMapper.toDto(template);
+    }
+
+    private Template findUsersActiveTemplateByCategory(User user, ServiceCategory category) {
+        return templateRepository.findByUserAndCategoryAndStatus(user, category, Status.ACTIVE)
+                .orElseThrow(() -> new TemplateNotFound(user.getEmail(), category.getCategoryName(), Status.ACTIVE));
+    }
+
 
 }

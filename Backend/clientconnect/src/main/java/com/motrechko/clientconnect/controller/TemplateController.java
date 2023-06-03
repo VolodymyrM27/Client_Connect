@@ -1,11 +1,14 @@
 package com.motrechko.clientconnect.controller;
 
 import com.motrechko.clientconnect.dto.RequirementDto;
+import com.motrechko.clientconnect.dto.ReviewDto;
 import com.motrechko.clientconnect.dto.TemplateDTO;
 import com.motrechko.clientconnect.model.ServiceCategory;
 import com.motrechko.clientconnect.service.RequirementService;
+import com.motrechko.clientconnect.service.ReviewService;
 import com.motrechko.clientconnect.service.ServiceCategoryService;
 import com.motrechko.clientconnect.service.TemplateService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +23,7 @@ public class TemplateController {
     private final TemplateService templateService;
     private final ServiceCategoryService serviceCategoryService;
     private final RequirementService requirementService;
+    private final ReviewService reviewService;
 
     @PostMapping()
     public ResponseEntity<TemplateDTO> createTemplate(@RequestBody TemplateDTO templateDto){
@@ -46,4 +50,11 @@ public class TemplateController {
     public ResponseEntity<List<RequirementDto>> getRequirementsByCategory(@PathVariable Long id){
         return ResponseEntity.ok(requirementService.getRequirementsByCategory(id));
     }
+
+    @PostMapping("/reviews")
+    public ResponseEntity<ReviewDto> createNewReview( @RequestBody @Valid ReviewDto reviewDTO){
+        return ResponseEntity.ok(reviewService.create(reviewDTO));
+    }
+
+
 }

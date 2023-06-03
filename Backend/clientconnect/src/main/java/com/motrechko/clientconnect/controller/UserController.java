@@ -1,8 +1,10 @@
 package com.motrechko.clientconnect.controller;
 
+import com.motrechko.clientconnect.dto.ReviewDto;
 import com.motrechko.clientconnect.dto.TemplateDTO;
 import com.motrechko.clientconnect.dto.UserDTO;
 import com.motrechko.clientconnect.dto.UserProfileDTO;
+import com.motrechko.clientconnect.service.ReviewService;
 import com.motrechko.clientconnect.service.TemplateService;
 import com.motrechko.clientconnect.service.UserProfileService;
 import com.motrechko.clientconnect.service.UserService;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -24,6 +27,7 @@ public class UserController {
     private final UserService userService;
     private final UserProfileService userProfileService;
     private final TemplateService templateService;
+    private final ReviewService reviewService;
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
@@ -73,5 +77,9 @@ public class UserController {
     public ResponseEntity<UserProfileDTO> updateUserProfileInfo(@PathVariable Long id, @RequestBody UserProfileDTO userProfileDTO) {
         log.info("Updating info - profile for user with id: {}", id);
         return ResponseEntity.ok(userProfileService.updateUserProfile(id, userProfileDTO));
+    }
+    @GetMapping("/{userId}/reviews")
+    public ResponseEntity<List<ReviewDto>> getAllReviews(@PathVariable Long userId){
+        return ResponseEntity.ok(reviewService.getAllReviewsByUserId(userId));
     }
 }

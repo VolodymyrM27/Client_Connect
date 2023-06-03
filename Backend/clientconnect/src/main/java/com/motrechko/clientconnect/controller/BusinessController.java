@@ -2,8 +2,10 @@ package com.motrechko.clientconnect.controller;
 
 import com.motrechko.clientconnect.dto.BusinessDto;
 import com.motrechko.clientconnect.dto.RequirementDto;
+import com.motrechko.clientconnect.dto.ReviewDto;
 import com.motrechko.clientconnect.dto.TerminalDto;
 import com.motrechko.clientconnect.service.BusinessService;
+import com.motrechko.clientconnect.service.ReviewService;
 import com.motrechko.clientconnect.service.TerminalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ public class BusinessController {
 
     private final BusinessService businessService;
     private final TerminalService terminalService;
+    private final ReviewService reviewService;
 
     @GetMapping
     public ResponseEntity<List<BusinessDto>> getAllBusiness(){
@@ -49,5 +52,10 @@ public class BusinessController {
     @PostMapping("/terminals")
     public ResponseEntity<TerminalDto> addNewTerminals(@RequestBody TerminalDto terminalDto){
         return ResponseEntity.ok(terminalService.create(terminalDto));
+    }
+
+    @GetMapping("/{businessId}/reviews")
+    public ResponseEntity<List<ReviewDto>> getAllBusinessReviews(@PathVariable Long businessId){
+        return ResponseEntity.ok(reviewService.getAllReviewsByBusiness(businessId));
     }
 }

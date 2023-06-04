@@ -1,13 +1,7 @@
 package com.motrechko.clientconnect.controller;
 
-import com.motrechko.clientconnect.dto.ReviewDto;
-import com.motrechko.clientconnect.dto.TemplateDTO;
-import com.motrechko.clientconnect.dto.UserDTO;
-import com.motrechko.clientconnect.dto.UserProfileDTO;
-import com.motrechko.clientconnect.service.ReviewService;
-import com.motrechko.clientconnect.service.TemplateService;
-import com.motrechko.clientconnect.service.UserProfileService;
-import com.motrechko.clientconnect.service.UserService;
+import com.motrechko.clientconnect.dto.*;
+import com.motrechko.clientconnect.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +22,7 @@ public class UserController {
     private final UserProfileService userProfileService;
     private final TemplateService templateService;
     private final ReviewService reviewService;
+    private final UserTemplateHistoryService userTemplateHistoryService;
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
@@ -81,5 +76,10 @@ public class UserController {
     @GetMapping("/{userId}/reviews")
     public ResponseEntity<List<ReviewDto>> getAllReviews(@PathVariable Long userId){
         return ResponseEntity.ok(reviewService.getAllReviewsByUserId(userId));
+    }
+
+    @GetMapping("/{userId}/history")
+    public ResponseEntity<List<UserTemplateHistoryDto>> getUserHistoryByDate(@PathVariable Long userId){
+        return ResponseEntity.ok(userTemplateHistoryService.getUserTemplateHistoryByDate(userId));
     }
 }

@@ -1,6 +1,5 @@
 package com.motrechko.clientconnect.repository;
 
-import com.motrechko.clientconnect.dto.RequirementDto;
 import com.motrechko.clientconnect.model.Business;
 import com.motrechko.clientconnect.model.BusinessSupportedRequirement;
 import com.motrechko.clientconnect.model.Requirement;

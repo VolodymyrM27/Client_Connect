@@ -34,6 +34,31 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(JwtTokenExpiredException.class)
+    public ResponseEntity<ApiError> handleJwtTokenExpiredException(JwtTokenExpiredException ex, HttpServletRequest request) {
+        log.error("Jwt token expired exception: {}", ex.getMessage());
+        ApiError errorDetails = new ApiError(
+                request.getRequestURI(),
+                ex.getMessage(),
+                HttpStatus.UNAUTHORIZED.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(InvalidJwtTokenException.class)
+    public ResponseEntity<ApiError> handleInvalidJwtTokenException(InvalidJwtTokenException ex, HttpServletRequest request) {
+        log.error("Invalid Jwt token exception: {}", ex.getMessage());
+        ApiError errorDetails = new ApiError(
+                request.getRequestURI(),
+                ex.getMessage(),
+                HttpStatus.UNAUTHORIZED.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+    }
+
+
     @ExceptionHandler({AccessDeniedException.class, AccountRoleException.class})
     public ResponseEntity<ApiError> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
         log.error("Access denied exception: {}", ex.getMessage());

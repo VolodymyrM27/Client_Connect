@@ -9,6 +9,9 @@ import com.motrechko.clientconnect.model.UserTemplateHistory;
 import com.motrechko.clientconnect.repository.UserTemplateHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -54,4 +57,13 @@ public class UserTemplateHistoryService {
         List<UserTemplateHistory> existedHistory  = userTemplateHistoryRepository.findByUser_IdOrderByUsedAtDesc(userId);
         return userTemplateHistoryMapper.toDto(existedHistory);
     }
+
+    public List<UserTemplateHistoryDto> getFirst10HistoriesByBusinessIdOrderByUsedAtDesc(Long businessId){
+        Pageable pageable = PageRequest.of(0, 10); // Page number starts from 0
+        Page<UserTemplateHistory> userTemplateHistoryPage = userTemplateHistoryRepository
+                .findFirst10ByBusiness_IdOrderByUsedAtDesc(businessId, pageable);
+        List<UserTemplateHistory> userTemplateHistoryList = userTemplateHistoryPage.getContent();
+        return userTemplateHistoryMapper.toDto(userTemplateHistoryList);
+    }
+
 }

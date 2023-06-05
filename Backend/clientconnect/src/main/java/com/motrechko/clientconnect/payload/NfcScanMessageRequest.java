@@ -1,11 +1,11 @@
-package com.motrechko.clientconnect.dto;
+package com.motrechko.clientconnect.payload;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class NfcScanMessageDTO {
+public class NfcScanMessageRequest {
     private String terminalUUID;
     private String cardId;
 }

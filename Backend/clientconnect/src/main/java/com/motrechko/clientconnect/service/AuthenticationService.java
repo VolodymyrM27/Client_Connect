@@ -2,9 +2,9 @@ package com.motrechko.clientconnect.service;
 
 import com.motrechko.clientconnect.exception.EmailExistException;
 import com.motrechko.clientconnect.model.Language;
-import com.motrechko.clientconnect.dto.AuthenticationRequestDTO;
-import com.motrechko.clientconnect.dto.AuthenticationResponseDTO;
-import com.motrechko.clientconnect.dto.RegisterRequestDTO;
+import com.motrechko.clientconnect.payload.AuthenticationRequest;
+import com.motrechko.clientconnect.payload.AuthenticationResponse;
+import com.motrechko.clientconnect.payload.RegisterRequest;
 import com.motrechko.clientconnect.security.JwtService;
 import com.motrechko.clientconnect.model.Role;
 import com.motrechko.clientconnect.model.User;
@@ -31,7 +31,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     @Transactional
-    public AuthenticationResponseDTO register(RegisterRequestDTO request) {
+    public AuthenticationResponse register(RegisterRequest request) {
         if(userRepository.findByEmail(request.getEmail()).isPresent())
             throw new EmailExistException(request.getEmail());
 
@@ -50,12 +50,12 @@ public class AuthenticationService {
         log.info("User {} successfully registered.", request.getEmail());
 
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponseDTO.builder()
+        return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
     }
 
-    public AuthenticationResponseDTO authenticate(AuthenticationRequestDTO request) {
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
 
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("Username with login: " + request.getEmail() + " not found"));
@@ -73,7 +73,7 @@ public class AuthenticationService {
 
         var jwtToken = jwtService.generateToken(user);
 
-        return AuthenticationResponseDTO.builder()
+        return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
     }

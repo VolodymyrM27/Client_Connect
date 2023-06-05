@@ -6,6 +6,8 @@ import lombok.*;
 
 import java.time.Instant;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 @NamedEntityGraph(
@@ -59,7 +61,7 @@ public class Template {
     private Set<Review> reviews = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "template")
-    private Set<TemplateRequirement> templateRequirements = new LinkedHashSet<>();
+    private List<TemplateRequirement> templateRequirements = new LinkedList<>();
 
     @OneToMany(mappedBy = "template")
     private Set<UserTemplateHistory> userTemplateHistories = new LinkedHashSet<>();

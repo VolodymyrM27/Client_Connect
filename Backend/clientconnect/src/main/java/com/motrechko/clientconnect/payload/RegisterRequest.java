@@ -1,4 +1,4 @@
-package com.motrechko.clientconnect.dto;
+package com.motrechko.clientconnect.payload;
 
 
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequestDTO {
+public class RegisterRequest {
     private String email;
     private String password;
     private boolean isBusiness;

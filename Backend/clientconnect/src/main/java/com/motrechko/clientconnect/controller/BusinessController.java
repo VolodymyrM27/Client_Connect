@@ -45,7 +45,7 @@ public class BusinessController {
     }
 
     @GetMapping("/{businessId}/requirements")
-    public ResponseEntity<Set<RequirementDto>> getSupportedRequirements(@PathVariable Long businessId){
+    public ResponseEntity<List<RequirementDto>> getSupportedRequirements(@PathVariable Long businessId){
         return ResponseEntity.ok(businessService.getSupportedRequirements(businessId));
     }
 

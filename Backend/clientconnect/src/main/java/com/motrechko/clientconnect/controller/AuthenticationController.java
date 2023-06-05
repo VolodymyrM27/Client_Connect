@@ -1,10 +1,10 @@
 package com.motrechko.clientconnect.controller;
 
 
-import com.motrechko.clientconnect.dto.AuthenticationRequestDTO;
-import com.motrechko.clientconnect.dto.AuthenticationResponseDTO;
+import com.motrechko.clientconnect.payload.AuthenticationRequest;
+import com.motrechko.clientconnect.payload.AuthenticationResponse;
 import com.motrechko.clientconnect.service.AuthenticationService;
-import com.motrechko.clientconnect.dto.RegisterRequestDTO;
+import com.motrechko.clientconnect.payload.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,12 +20,12 @@ public class AuthenticationController {
 
     private final AuthenticationService service;
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponseDTO> register(@RequestBody RegisterRequestDTO request){
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request){
             return ResponseEntity.ok(service.register(request));
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponseDTO> login(@RequestBody AuthenticationRequestDTO request){
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request){
         return ResponseEntity.ok(service.authenticate(request));
     }
 }

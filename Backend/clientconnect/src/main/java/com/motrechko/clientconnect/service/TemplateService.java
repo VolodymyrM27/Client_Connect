@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -56,7 +57,7 @@ public class TemplateService {
 
     private void saveTemplateRequirements(Template template) {
         log.info("Saving template requirements");
-        Set<TemplateRequirement> templateRequirements = template.getTemplateRequirements();
+        List<TemplateRequirement> templateRequirements = template.getTemplateRequirements();
         if (templateRequirements.isEmpty())
             throw new TemplateRequirementEmptyException();
 
@@ -65,9 +66,13 @@ public class TemplateService {
     }
 
 
-    public TemplateDTO getTemplateById(Long idTemplate) {
+    public TemplateDTO getTemplateDtoById(Long idTemplate) {
         Template template = findExistingTemplate(idTemplate);
         return templateMapper.toDto(template);
+    }
+
+    public Template getTemplateById(Long idTemplate) {
+        return findExistingTemplate(idTemplate);
     }
 
     public Set<TemplateDTO> getTemplatesByUser(Long id) {

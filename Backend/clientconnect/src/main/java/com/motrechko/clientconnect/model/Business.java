@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -39,4 +41,6 @@ public class Business {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    @OneToMany(mappedBy = "business")
+    private Set<BusinessSupportedRequirement> businessSupportedRequirements = new LinkedHashSet<>();
 }

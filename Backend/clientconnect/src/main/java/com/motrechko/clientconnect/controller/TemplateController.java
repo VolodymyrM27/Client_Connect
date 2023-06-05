@@ -4,10 +4,8 @@ import com.motrechko.clientconnect.dto.RequirementDto;
 import com.motrechko.clientconnect.dto.ReviewDto;
 import com.motrechko.clientconnect.dto.TemplateDTO;
 import com.motrechko.clientconnect.model.ServiceCategory;
-import com.motrechko.clientconnect.service.RequirementService;
-import com.motrechko.clientconnect.service.ReviewService;
-import com.motrechko.clientconnect.service.ServiceCategoryService;
-import com.motrechko.clientconnect.service.TemplateService;
+import com.motrechko.clientconnect.payload.SupportedBusinessResponse;
+import com.motrechko.clientconnect.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +22,7 @@ public class TemplateController {
     private final ServiceCategoryService serviceCategoryService;
     private final RequirementService requirementService;
     private final ReviewService reviewService;
+    private final BusinessService businessService;
 
     @PostMapping()
     public ResponseEntity<TemplateDTO> createTemplate(@RequestBody TemplateDTO templateDto){
@@ -38,7 +37,7 @@ public class TemplateController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TemplateDTO> getTemplate(@PathVariable Long id){
-        return ResponseEntity.ok(templateService.getTemplateById(id));
+        return ResponseEntity.ok(templateService.getTemplateDtoById(id));
     }
 
     @GetMapping("/categories")
@@ -56,5 +55,9 @@ public class TemplateController {
         return ResponseEntity.ok(reviewService.create(reviewDTO));
     }
 
+    @GetMapping("/{id}/supported_businesses")
+    public ResponseEntity<List<SupportedBusinessResponse>> getSupportedBusinessOrderByRequirements(@PathVariable Long id){
+        return ResponseEntity.ok(businessService.getSupportedBusinesses(id));
+    }
 
 }

@@ -1,4 +1,4 @@
-package com.motrechko.clientconnect.dto;
+package com.motrechko.clientconnect.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequestDTO {
-    private String email;
-    private String password;
+public class AuthenticationResponse {
+    private String token;
 }

@@ -10,6 +10,7 @@ import com.motrechko.clientconnect.exception.UnsupportedRequirementException;
 import com.motrechko.clientconnect.mapper.BusinessMapper;
 import com.motrechko.clientconnect.mapper.RequirementMapper;
 import com.motrechko.clientconnect.model.*;
+import com.motrechko.clientconnect.payload.SupportedBusinessResponse;
 import com.motrechko.clientconnect.repository.BusinessRepository;
 import com.motrechko.clientconnect.repository.BusinessSupportedRequirementRepository;
 import com.motrechko.clientconnect.repository.RequirementRepository;
@@ -35,6 +36,7 @@ public class BusinessService {
     private final BusinessSupportedRequirementRepository businessSupportedRequirementRepository;
     private final RequirementRepository requirementRepository;
     private final TerminalService terminalService;
+    private final TemplateService templateService;
 
     @Transactional
     public BusinessDto create(BusinessDto businessDto) {
@@ -129,13 +131,13 @@ public class BusinessService {
         }
     }
 
-    public Set<RequirementDto> getSupportedRequirements(Long businessId) {
+    public List<RequirementDto> getSupportedRequirements(Long businessId) {
         findBusiness(businessId);
         return businessSupportedRequirementRepository.findByBusiness_Id(businessId)
                 .stream()
                 .map(BusinessSupportedRequirement::getRequirement)
                 .map(requirementMapper::toDto)
-                .collect(Collectors.toSet());
+                .toList();
     }
 
     public List<BusinessDto> getAllBusiness() {
@@ -149,5 +151,39 @@ public class BusinessService {
     public Business getBusinessByTerminalId(NfcScanMessageDTO nfcScanMessageDTO){
         Terminal terminal = terminalService.getTerminalByTerminalUUID(nfcScanMessageDTO.getTerminalUUID());
         return findBusiness(terminal.getBusiness().getId());
+    }
+
+    public List<SupportedBusinessResponse> getSupportedBusinesses(Long templateId) {
+        Template template = templateService.getTemplateById(templateId);
+
+        List<Requirement> requirements = getRequirementsFromTemplate(template);
+
+        List<Business> businesses = businessRepository.findBySupportedRequirements(requirements);
+
+        return businesses.stream()
+                .map(business -> createSupportedBusinessResponse(business, requirements))
+                .toList();
+    }
+
+    private List<Requirement> getRequirementsFromTemplate(Template template) {
+        return template.getTemplateRequirements()
+                .stream()
+                .map(TemplateRequirement::getRequirement)
+                .toList();
+    }
+
+    private SupportedBusinessResponse createSupportedBusinessResponse(Business business, List<Requirement> templateRequirements) {
+        List<Requirement> matchingRequirements = businessSupportedRequirementRepository.findByBusiness_Id(business.getId())
+                .stream()
+                .map(BusinessSupportedRequirement::getRequirement)
+                .filter(templateRequirements::contains)
+                .toList();
+
+        return SupportedBusinessResponse.builder()
+                .businessId(business.getId())
+                .businessName(business.getBusinessName())
+                .businessAddress(business.getAddress())
+                .supportedRequirement(requirementMapper.toDto(matchingRequirements))
+                .build();
     }
 }

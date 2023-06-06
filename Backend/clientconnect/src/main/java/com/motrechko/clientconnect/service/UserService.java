@@ -1,6 +1,6 @@
 package com.motrechko.clientconnect.service;
 
-import com.motrechko.clientconnect.dto.NfcScanMessageDTO;
+import com.motrechko.clientconnect.payload.NfcScanMessageRequest;
 import com.motrechko.clientconnect.dto.UserDTO;
 import com.motrechko.clientconnect.exception.EmailExistException;
 import com.motrechko.clientconnect.exception.UserNotFoundException;
@@ -55,8 +55,8 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
-    public User getUserByCardDetails(NfcScanMessageDTO nfcScanMessageDTO){
-        Card card = cardService.getCardDetail(nfcScanMessageDTO.getCardId());
+    public User getUserByCardDetails(NfcScanMessageRequest nfcScanMessageRequest){
+        Card card = cardService.getCardDetail(nfcScanMessageRequest.getCardId());
         return getUser(card.getUser().getId());
     }
 

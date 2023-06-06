@@ -1,5 +1,7 @@
 package com.motrechko.clientconnect.dto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -14,6 +16,8 @@ import java.time.Instant;
 
 
 @Data
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+
 public class ReviewDto {
     private Long id;
 

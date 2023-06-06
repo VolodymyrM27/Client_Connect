@@ -4,7 +4,9 @@ import com.motrechko.clientconnect.dto.BusinessDto;
 import com.motrechko.clientconnect.dto.RequirementDto;
 import com.motrechko.clientconnect.dto.ReviewDto;
 import com.motrechko.clientconnect.dto.TerminalDto;
+import com.motrechko.clientconnect.payload.BusinessStatisticResponse;
 import com.motrechko.clientconnect.service.BusinessService;
+import com.motrechko.clientconnect.service.BusinessStatisticService;
 import com.motrechko.clientconnect.service.ReviewService;
 import com.motrechko.clientconnect.service.TerminalService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class BusinessController {
     private final BusinessService businessService;
     private final TerminalService terminalService;
     private final ReviewService reviewService;
+    private final BusinessStatisticService businessStatisticService;
 
     @GetMapping
     public ResponseEntity<List<BusinessDto>> getAllBusiness(){
@@ -57,5 +60,10 @@ public class BusinessController {
     @GetMapping("/{businessId}/reviews")
     public ResponseEntity<List<ReviewDto>> getAllBusinessReviews(@PathVariable Long businessId){
         return ResponseEntity.ok(reviewService.getAllReviewsByBusiness(businessId));
+    }
+
+    @GetMapping("/{id}/statistic")
+    private ResponseEntity<BusinessStatisticResponse> getBusinessStatistic(@PathVariable Long id){
+        return ResponseEntity.ok(businessStatisticService.getStatistic(id));
     }
 }

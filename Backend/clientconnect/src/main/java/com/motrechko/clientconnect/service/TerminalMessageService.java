@@ -3,7 +3,7 @@ package com.motrechko.clientconnect.service;
 
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
-import com.motrechko.clientconnect.dto.NfcScanMessageDTO;
+import com.motrechko.clientconnect.payload.NfcScanMessageRequest;
 import com.motrechko.clientconnect.dto.TemplateDTO;
 import com.motrechko.clientconnect.exception.NfcScanMessageException;
 import com.motrechko.clientconnect.model.Business;
@@ -46,13 +46,13 @@ public class TerminalMessageService {
 
     private void subscribeToNfcScanTopic(Mqtt5Publish mqtt5Publish){
         String messagePayload = new String(mqtt5Publish.getPayloadAsBytes(), StandardCharsets.UTF_8);
-        NfcScanMessageDTO nfcScanMessage = parseNfcScanMessage(messagePayload);
+        NfcScanMessageRequest nfcScanMessage = parseNfcScanMessage(messagePayload);
         log.info("Received NFC scan message. Terminal UUID: {}, card ID: {}", nfcScanMessage.getTerminalUUID(), nfcScanMessage.getCardId());
 
         processUserRecognition(nfcScanMessage);
     }
 
-    private NfcScanMessageDTO parseNfcScanMessage(String messagePayload){
+    private NfcScanMessageRequest parseNfcScanMessage(String messagePayload){
         String[] messageParts = messagePayload.split(":");
 
         if(messageParts.length < 2) {
@@ -60,13 +60,13 @@ public class TerminalMessageService {
             throw new NfcScanMessageException(messagePayload);
         }
 
-        return NfcScanMessageDTO.builder()
+        return NfcScanMessageRequest.builder()
                 .terminalUUID(messageParts[0])
                 .cardId(messageParts[1])
                 .build();
     }
 
-    private void processUserRecognition(NfcScanMessageDTO nfcScanMessage) {
+    private void processUserRecognition(NfcScanMessageRequest nfcScanMessage) {
         try {
             User recognizedUser = identifyUser(nfcScanMessage);
             Business recognizedBusiness = identifyBusiness(nfcScanMessage);
@@ -77,15 +77,15 @@ public class TerminalMessageService {
         }
     }
 
-    private User identifyUser(NfcScanMessageDTO nfcScanMessageDTO){
-        User user = userService.getUserByCardDetails(nfcScanMessageDTO);
-        log.info("Found user {} by cardId {}", user.getEmail(), nfcScanMessageDTO.getCardId());
+    private User identifyUser(NfcScanMessageRequest nfcScanMessageRequest){
+        User user = userService.getUserByCardDetails(nfcScanMessageRequest);
+        log.info("Found user {} by cardId {}", user.getEmail(), nfcScanMessageRequest.getCardId());
         return user;
     }
 
-    private Business identifyBusiness(NfcScanMessageDTO nfcScanMessageDTO){
-        Business business = businessService.getBusinessByTerminalId(nfcScanMessageDTO);
-        log.info("Found Business {} by terminalUUID {}", business.getBusinessName(), nfcScanMessageDTO.getTerminalUUID());
+    private Business identifyBusiness(NfcScanMessageRequest nfcScanMessageRequest){
+        Business business = businessService.getBusinessByTerminalId(nfcScanMessageRequest);
+        log.info("Found Business {} by terminalUUID {}", business.getBusinessName(), nfcScanMessageRequest.getTerminalUUID());
         return business;
     }
 

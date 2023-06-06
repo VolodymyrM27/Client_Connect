@@ -30,7 +30,7 @@ public class BusinessStatisticService {
     public BusinessStatisticResponse getStatistic(Long id) {
         BusinessStatisticResponse businessStatisticResponse = new BusinessStatisticResponse();
         businessStatisticResponse.setPopularRequirement(getPopularRequirementByBusiness(id));
-        businessStatisticResponse.setAverageBusinessRatingByReviews(getAverageBusinessRatingByReviews(id));
+        businessStatisticResponse.setAverageBusinessRatingByReviews(calculateAverageBusinessRating(id));
         businessStatisticResponse.setUserVisitHistory(getUserHistoryByDate(id));
         businessStatisticResponse.setLatestFeedback(latestReviews(id));
         businessStatisticResponse.setMostActiveVisitingHours(getMostVisitedHours(id));
@@ -39,6 +39,15 @@ public class BusinessStatisticService {
         businessStatisticResponse.setUserVisitsByDays(getUserVisitsByDay(id));
         businessStatisticResponse.setUserVisitsByMonths(getUserVisitsByMonth(id));
 
+        UserVisitsByMonth lastMonth = UserVisitsByMonth.builder().month(0).visits(0).build();
+
+        if (!businessStatisticResponse.getUserVisitsByMonths().isEmpty()) {
+            lastMonth = businessStatisticResponse.getUserVisitsByMonths().get(businessStatisticResponse.getUserVisitsByMonths().size() - 1);
+        }
+
+        businessStatisticResponse.setGlobalRating(
+                getGlobalRating(id, businessStatisticResponse.getAverageBusinessRatingByReviews(), lastMonth)
+        );
 
         return businessStatisticResponse;
     }
@@ -47,7 +56,7 @@ public class BusinessStatisticService {
         return businessSupportedRequirementRepository.findMostPopularRequirements(id);
     }
 
-    private Double getAverageBusinessRatingByReviews(Long id) {
+    private Double calculateAverageBusinessRating(Long id) {
         return reviewRepository.findAverageBusinessRating(id);
     }
 
@@ -98,6 +107,19 @@ public class BusinessStatisticService {
 
     private List<UserVisitsByMonth> getUserVisitsByMonth(Long id){
         return userTemplateHistoryRepository.findVisitsByMonthRaw(id);
+    }
+
+    private double getGlobalRating(Long id, Double averageRatingByReviews, UserVisitsByMonth userVisitsByMonth){
+        double averageRating = averageRatingByReviews;
+        double reviewCount = reviewRepository.countByBusiness_Id(id);
+        double visitsPerMonth = userVisitsByMonth.getVisits();
+        int uniqUsers = userTemplateHistoryRepository.findFrequentVisitors(id);
+        final double RATING_WEIGHT = 3.0;
+        final double REVIEW_WEIGHT = 1.0;
+        final double VISIT_WEIGHT = 2.0;
+        final double REPEAT_WEIGHT = 2.0;
+        return (averageRating * RATING_WEIGHT + reviewCount * REVIEW_WEIGHT + visitsPerMonth * VISIT_WEIGHT + uniqUsers * REPEAT_WEIGHT)
+                / (RATING_WEIGHT + REPEAT_WEIGHT + VISIT_WEIGHT + REPEAT_WEIGHT);
     }
 
 }

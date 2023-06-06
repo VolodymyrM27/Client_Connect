@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
+    long countByBusiness_Id(Long id);
     List<Review> findByBusiness_Id(Long id);
 
     Page<Review> findFirst10ByBusiness_IdOrderByReviewedAtDesc(Long id, Pageable pageable);

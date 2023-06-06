@@ -47,6 +47,9 @@ public interface UserTemplateHistoryRepository extends JpaRepository<UserTemplat
             "ORDER BY YEAR(uth.usedAt), MONTH(uth.usedAt)")
     List<UserVisitsByMonth> findVisitsByMonthRaw(@Param("businessId") Long businessId);
 
+    @Query(value = "SELECT COUNT(*) FROM (SELECT uth.user_id FROM user_template_history uth WHERE uth.business_id = :businessId GROUP BY uth.user_id HAVING COUNT(uth.user_id) > 1) AS frequent_visitors", nativeQuery = true)
+    int findFrequentVisitors(@Param("businessId") Long businessId);
+
 
 
 }

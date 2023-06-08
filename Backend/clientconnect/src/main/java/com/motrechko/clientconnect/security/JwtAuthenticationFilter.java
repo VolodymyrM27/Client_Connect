@@ -27,6 +27,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Qualifier("handlerExceptionResolver")
     private final HandlerExceptionResolver exceptionResolver;
 
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BEARER_PREFIX = "Bearer ";
+    private static final int BEARER_PREFIX_LENGTH = BEARER_PREFIX.length();
+
     public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService, @Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
@@ -38,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
+        final String authHeader = request.getHeader(AUTHORIZATION_HEADER);
 
         if (isHeaderInvalid(authHeader)) {
             filterChain.doFilter(request, response);
@@ -57,11 +61,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isHeaderInvalid(String authHeader) {
-        return authHeader == null || authHeader.isBlank() || !authHeader.startsWith("Bearer ");
+        return authHeader == null || authHeader.isBlank() || !authHeader.startsWith(BEARER_PREFIX);
     }
 
     private String extractJwtFromHeader(String authHeader) {
-        return authHeader.substring(7);
+        return authHeader.substring(BEARER_PREFIX_LENGTH);
     }
 
     private void performAuthenticationWithJwt(String jwt, HttpServletRequest request) {

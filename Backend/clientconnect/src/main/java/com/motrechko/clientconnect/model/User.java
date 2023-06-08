@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.security.Principal;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User implements UserDetails, Principal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,10 +32,10 @@ public class User implements UserDetails {
     private Role role;
 
 
-    @ToString.Include(name = "password")
-    private String maskPassword() {
-        return "********";
-    }
+//    @ToString.Include(name = "password")
+//    private String maskPassword() {
+//        return "********";
+//    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
@@ -63,5 +64,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String getName() {
+        return getUsername();
     }
 }

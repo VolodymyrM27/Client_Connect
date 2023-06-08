@@ -3,6 +3,7 @@ package com.motrechko.clientconnect.service;
 
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
+import com.motrechko.clientconnect.controller.WebsocketController;
 import com.motrechko.clientconnect.payload.NfcScanMessageRequest;
 import com.motrechko.clientconnect.dto.TemplateDTO;
 import com.motrechko.clientconnect.exception.NfcScanMessageException;
@@ -26,6 +27,7 @@ public class TerminalMessageService {
     private final BusinessService businessService;
     private final TemplateService templateService;
     private final UserTemplateHistoryService userTemplateHistoryService;
+    private final WebsocketController websocketController;
 
     @PostConstruct
     public void initialize(){
@@ -72,6 +74,7 @@ public class TerminalMessageService {
             Business recognizedBusiness = identifyBusiness(nfcScanMessage);
             TemplateDTO recognizedTemplate = findUserTemplate(recognizedUser, recognizedBusiness);
             recordUserActivity(recognizedUser, recognizedBusiness, recognizedTemplate);
+
         } catch (Exception e){
             log.error("Error during user recognition: {}", e.getMessage());
         }
@@ -92,6 +95,7 @@ public class TerminalMessageService {
     private TemplateDTO findUserTemplate(User user, Business business){
         TemplateDTO templateDTO = templateService.getUsersActiveTemplateByCategory(user, business.getCategory());
         log.info("Found users template {}", templateDTO);
+        websocketController.sendTemplateInfoToBusiness(templateDTO, business.getId());
         return templateDTO;
     }
 

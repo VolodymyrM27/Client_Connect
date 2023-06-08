@@ -3,6 +3,7 @@ package com.motrechko.clientconnect.service;
 
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
+import com.motrechko.clientconnect.controller.WebsocketController;
 import com.motrechko.clientconnect.payload.NfcScanMessageRequest;
 import com.motrechko.clientconnect.dto.TemplateDTO;
 import com.motrechko.clientconnect.exception.NfcScanMessageException;

@@ -19,7 +19,6 @@ public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
-    private final RequestLoggingFilter requestLoggingFilter;
 
 
     @Bean
@@ -27,14 +26,17 @@ public class SecurityConfiguration {
         http
                 .csrf()
                 .disable()
-                .addFilterBefore(requestLoggingFilter, UsernamePasswordAuthenticationFilter.class)
+                .httpBasic()
+                .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/websocket-endpoint/**")
+                .requestMatchers("/ws/**")
                 .permitAll()
                 .requestMatchers("/api/v1/auth/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
+                .and()
+                .cors()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

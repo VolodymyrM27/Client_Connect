@@ -24,6 +24,4 @@ public class WebsocketController {
         log.info("Send websocket: " + templateDTO);
     }
 
-
-
 }

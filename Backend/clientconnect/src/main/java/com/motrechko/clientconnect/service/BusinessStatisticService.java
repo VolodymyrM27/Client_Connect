@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -57,8 +58,10 @@ public class BusinessStatisticService {
     }
 
     private Double calculateAverageBusinessRating(Long id) {
-        return reviewRepository.findAverageBusinessRating(id);
+        Double averageRating = reviewRepository.findAverageBusinessRating(id);
+        return Objects.requireNonNullElse(averageRating, 0.0);
     }
+
 
     private List<UserTemplateHistoryDto> getUserHistoryByDate(Long id) {
         return userTemplateHistoryService.getFirst10HistoriesByBusinessIdOrderByUsedAtDesc(id);

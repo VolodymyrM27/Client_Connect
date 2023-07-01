@@ -22,6 +22,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final CardService cardService;
+    private UserProfileService userProfileService;
 
     @Transactional
     public UserDTO updateUser(Long id, UserDTO userDTO) {
@@ -65,4 +66,7 @@ public class UserService {
     }
 
 
+    public void deleteUserById(Long employeeId) {
+        userRepository.deleteById(employeeId);
+    }
 }

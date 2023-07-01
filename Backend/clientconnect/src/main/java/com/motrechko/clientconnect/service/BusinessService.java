@@ -1,8 +1,9 @@
 package com.motrechko.clientconnect.service;
 
-import com.motrechko.clientconnect.dto.BusinessDto;
+import com.motrechko.clientconnect.dto.*;
+import com.motrechko.clientconnect.mapper.BusinessUserProfileMapper;
+import com.motrechko.clientconnect.payload.EmployeeResponse;
 import com.motrechko.clientconnect.payload.NfcScanMessageRequest;
-import com.motrechko.clientconnect.dto.RequirementDto;
 import com.motrechko.clientconnect.exception.AccountRoleException;
 import com.motrechko.clientconnect.exception.BusinessNotFoundException;
 import com.motrechko.clientconnect.exception.RequirementNotFoundException;
@@ -10,9 +11,11 @@ import com.motrechko.clientconnect.exception.UnsupportedRequirementException;
 import com.motrechko.clientconnect.mapper.BusinessMapper;
 import com.motrechko.clientconnect.mapper.RequirementMapper;
 import com.motrechko.clientconnect.model.*;
+import com.motrechko.clientconnect.payload.RegisterRequest;
 import com.motrechko.clientconnect.payload.SupportedBusinessResponse;
 import com.motrechko.clientconnect.repository.BusinessRepository;
 import com.motrechko.clientconnect.repository.BusinessSupportedRequirementRepository;
+import com.motrechko.clientconnect.repository.BusinessUserProfileRepository;
 import com.motrechko.clientconnect.repository.RequirementRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,6 +41,10 @@ public class BusinessService {
     private final RequirementRepository requirementRepository;
     private final TerminalService terminalService;
     private final TemplateService templateService;
+    private final AuthenticationService authenticationService;
+    private final UserProfileService userProfileService;
+    private final BusinessUserProfileRepository businessUserProfileRepository;
+    private final BusinessUserProfileMapper businessUserProfileMapper;
 
     @Transactional
     public BusinessDto create(BusinessDto businessDto) {
@@ -56,7 +64,7 @@ public class BusinessService {
         User user = userService.getUser(businessDto.getUserId());
         if (Boolean.FALSE.equals(user.getIsBusiness())) {
             log.error("User {} is not a business", businessDto.getUserId());
-            throw new AccountRoleException(businessDto.getUserId(), Role.NORMAL_USER);
+            throw new AccountRoleException(businessDto.getUserId(), Role.USER);
         }
     }
 
@@ -148,7 +156,7 @@ public class BusinessService {
         return businessMapper.toDto(businessRepository.findByCategory_Id(idCategory));
     }
 
-    public Business getBusinessByTerminalId(NfcScanMessageRequest nfcScanMessageRequest){
+    public Business getBusinessByTerminalId(NfcScanMessageRequest nfcScanMessageRequest) {
         Terminal terminal = terminalService.getTerminalByTerminalUUID(nfcScanMessageRequest.getTerminalUUID());
         return findBusiness(terminal.getBusiness().getId());
     }
@@ -185,5 +193,57 @@ public class BusinessService {
                 .businessAddress(business.getAddress())
                 .supportedRequirement(requirementMapper.toDto(matchingRequirements))
                 .build();
+    }
+
+    @Transactional
+    public void deleteRequirement(Long businessId, Long requirementId) {
+        businessSupportedRequirementRepository.deleteByBusinessIdAndRequirementId(businessId, requirementId);
+    }
+
+    public BusinessDto getBusinessByUser(Long userId) {
+        return businessMapper.toDto(businessRepository.findByUser_Id(userId));
+    }
+
+    public BusinessUserProfileDto createNewEmployee(RegisterRequest employeeRequest
+                                            , UserProfileDTO userProfileDTO,
+                                                    Long businessId) {
+        var response = authenticationService.register(employeeRequest);
+        userProfileService.createProfile(response.getId(), userProfileDTO);
+        BusinessUserProfile employee = BusinessUserProfile.builder()
+                .position(Position.MANAGER)
+                .user(userService.getUser(response.getId()))
+                .business(findBusiness(businessId))
+                .build();
+         return businessUserProfileMapper.toDto(businessUserProfileRepository.save(employee));
+    }
+
+    public List<EmployeeResponse> getAllBusinessEmployees(Long businessId) {
+        List<BusinessUserProfileDto> allBusinessUserProfile =
+                businessUserProfileMapper.toDto(businessUserProfileRepository.findByBusiness_Id(businessId));
+        List<UserProfileDTO> userProfileDTOList = allBusinessUserProfile
+                .stream()
+                .map(BusinessUserProfileDto::getUserId)
+                .map(userProfileService::getUserProfile)
+                .toList();
+
+        List<EmployeeResponse> employeeResponses = new ArrayList<>();
+        for (int i = 0; i < allBusinessUserProfile.size(); i++) {
+            employeeResponses.add(EmployeeResponse.builder()
+                    .businessUserProfileDto(allBusinessUserProfile.get(i))
+                    .userProfileDTO(userProfileDTOList.get(i))
+                    .build());
+        }
+        return employeeResponses;
+    }
+
+    @Transactional
+    public void deleteEmployee(Long businessId, Long employeeId) {
+        businessUserProfileRepository.deleteByBusinessIdAndEmployeeId(businessId,employeeId);
+        userProfileService.deleteByUserId(employeeId);
+        userService.deleteUserById(employeeId);
+    }
+
+    public BusinessDto getBusinessById(Long businessId) {
+       return businessMapper.toDto(findBusiness(businessId));
     }
 }

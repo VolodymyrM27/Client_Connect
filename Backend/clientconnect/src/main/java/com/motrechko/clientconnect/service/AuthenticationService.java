@@ -41,8 +41,8 @@ public class AuthenticationService {
                 .languageSettings(Language.EN)
                 .registrationDate(Instant.now())
                 .lastLoginDate(Instant.now())
-                .isBusiness(request.isBusiness())
-                .role(request.isBusiness() ? Role.BUSINESS_USER : Role.NORMAL_USER)
+                .isBusiness(request.getRole().equals(Role.BUSINESS))
+                .role(request.getRole())
                 .build();
         userRepository.save(user);
 
@@ -52,6 +52,8 @@ public class AuthenticationService {
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .role(user.getRole())
+                .id(user.getId())
                 .build();
     }
 
@@ -75,6 +77,8 @@ public class AuthenticationService {
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .role(user.getRole())
+                .id(user.getId())
                 .build();
     }
 }

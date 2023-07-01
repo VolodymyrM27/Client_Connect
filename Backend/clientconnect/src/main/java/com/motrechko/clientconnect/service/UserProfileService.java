@@ -72,5 +72,9 @@ public class UserProfileService {
         return userProfileMapper.map(userProfileRepository.save(userProfile));
     }
 
+    @Transactional
+    public void deleteByUserId(Long employeeId) {
+        userProfileRepository.deleteByEmployeeId(employeeId);
+    }
 }
 

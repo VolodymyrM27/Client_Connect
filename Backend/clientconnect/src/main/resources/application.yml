@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: #
-    password: #
-    username: #
+    url: jdbc:mysql://localhost:3306/client_connect
+    password: 12345678
+    username: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -31,7 +31,7 @@ logging:
     com.motrechko.clientconnect: DEBUG
 mqtt:
   broker:
-    url: #.s2.eu.hivemq.cloud
+    url: #
   port: #
   username: #
   password: #
